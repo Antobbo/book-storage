@@ -1,0 +1,9 @@
+package com.test.model;
+
+public enum Location {
+	DOWNSTAIRS,
+	UPSTAIRS_FIRST_BEDROOM,
+	UPSTAIRS_SECOND_BEDROOM,
+	UPSTAIRS_SPARE_ROOM,
+	ON_LOAN;
+}
