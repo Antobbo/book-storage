@@ -8,15 +8,17 @@ public class Book {
 	private long id;
 	private String title;
 	private String author;
-	private Location location_id;	
+	private int location_id;	
 	
-	public Book(long id, String title, String author, Location location_id) {
-		this.id = id;
+	public Book(String title, String author, int location_id) {
 		this.title = title;
 		this.author = author;
 		this.location_id = location_id;
 	}
-	
+	public Book()
+	{
+		
+	}
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,22 +30,25 @@ public class Book {
         this.id = id;
     }
 	
-	public String getTitle() {
+    @Column(name = "title")
+    public String getTitle() {
 		return title;
 	}
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	@Column(name = "author")
 	public String getAuthor() {
 		return author;
 	}
 	public void setAuthor(String author) {
 		this.author = author;
 	}
-	public Location getLocation() {
+	@Column(name = "location_id")
+	public int getLocation() {
 		return location_id;
 	}
-	public void setLocation(Location location_id) {
+	public void setLocation(int location_id) {
 		this.location_id = location_id;
 	}
 
