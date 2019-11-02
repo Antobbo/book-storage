@@ -9,7 +9,9 @@ public class BookMainApp {
 		BookManager bookManager = new BookManager();
 		bookManager.setup();
 		//bookManager.create();
-		bookManager.read();
+		//bookManager.read();
+		//bookManager.update();
+		//bookManager.delete();
 		bookManager.exit();
 		
 

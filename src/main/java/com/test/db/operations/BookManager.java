@@ -69,9 +69,27 @@ public class BookManager {
  
     public void update() {
         // code to modify a book
+    	Session session = sessionFactory.openSession();
+    	String searchTerm = "Jack";
+    	session.beginTransaction();
+    	Criteria criteria = session.createCriteria(Book.class);
+    	Book uniqueResult = (Book) criteria.add(Restrictions.eq("author", searchTerm)).uniqueResult();
+    	uniqueResult.setTitle("Amended plus one");
+    	session.update(uniqueResult);
+    	session.getTransaction().commit();
+	    session.close();
+    	
     }
  
     public void delete() {
         // code to remove a book
+    	Session session = sessionFactory.openSession();
+    	String searchTerm = "Jack";
+    	session.beginTransaction();
+    	Criteria criteria = session.createCriteria(Book.class);
+    	Book uniqueResult = (Book) criteria.add(Restrictions.eq("author", searchTerm)).uniqueResult();
+    	session.delete(uniqueResult);
+    	session.getTransaction().commit();
+	    session.close();
     }
 }
