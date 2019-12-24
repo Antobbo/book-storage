@@ -11,8 +11,8 @@ public class BookMainApp {
 		UserInput userInput = new UserInput();
 		bookManager.setup();
 		//bookManager.create();
-		//bookManager.read();
-		//bookManager.update();
+//		bookManager.read();
+	//	bookManager.update();
 		//bookManager.delete();
 		
 		

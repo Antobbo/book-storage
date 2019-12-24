@@ -7,13 +7,13 @@
 	  <dependency>
 	      <groupId>org.hibernate</groupId>
 	      <artifactId>hibernate-core</artifactId>
-	      <version>5.2.6.Final</version>
+	      <version>5.4.10.Final</version>
 	  </dependency>
 	
 	  <dependency>
 	      <groupId>mysql</groupId>
 	      <artifactId>mysql-connector-java</artifactId>
-	      <version>5.1.40</version>
+	      <version>8.0.18</version>
 	  </dependency>
 	
 	</dependencies>

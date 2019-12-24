@@ -1,14 +1,5 @@
 package com.test.db.operations;
 
-import org.hibernate.SessionFactory;
-
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -59,6 +50,7 @@ public class BookManager {
     	String searchTerm = "Jack";
     	Criteria criteria = session.createCriteria(Book.class);
     	Book uniqueResult = (Book) criteria.add(Restrictions.eq("author", searchTerm)).uniqueResult();
+    	System.out.println(uniqueResult);
 //        EntityManagerFactory emfactory = Persistence.createEntityManagerFactory( "Eclipselink_JPA" );
 //        EntityManager entitymanager = emfactory.createEntityManager( );
 //        
@@ -78,6 +70,7 @@ public class BookManager {
     	session.update(uniqueResult);
     	session.getTransaction().commit();
 	    session.close();
+	    System.out.println(uniqueResult);
     	
     }
  
