@@ -44,13 +44,14 @@ public class BookManager {
 	    session.close();
     }
  
-    public void read() {
+    public void read(String dbQuery) {
         // code to get a book
+    	//todo: 
     	Session session = sessionFactory.openSession();
-    	String searchTerm = "Jack";
+    	//String searchTerm = "Jack";
     	Criteria criteria = session.createCriteria(Book.class);
-    	Book uniqueResult = (Book) criteria.add(Restrictions.eq("author", searchTerm)).uniqueResult();
-    	System.out.println(uniqueResult);
+    	Book uniqueResult = (Book) criteria.add(Restrictions.eq("author", dbQuery)).uniqueResult();
+    	System.out.println("Result is: " + uniqueResult);
 //        EntityManagerFactory emfactory = Persistence.createEntityManagerFactory( "Eclipselink_JPA" );
 //        EntityManager entitymanager = emfactory.createEntityManager( );
 //        
