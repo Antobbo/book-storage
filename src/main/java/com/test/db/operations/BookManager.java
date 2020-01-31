@@ -8,6 +8,7 @@ import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.criterion.Restrictions;
 
+import com.test.messages.Messages;
 import com.test.model.Book;
 import com.test.model.Location;
 
@@ -51,7 +52,17 @@ public class BookManager {
     	//String searchTerm = "Jack";
     	Criteria criteria = session.createCriteria(Book.class);
     	Book uniqueResult = (Book) criteria.add(Restrictions.eq("author", dbQuery)).uniqueResult();
-    	System.out.println("Result is: " + uniqueResult);
+    	if(uniqueResult != null)
+    	{
+    		//System.out.println("Result is: " + uniqueResult);
+    		String message = String.format(Messages.RECORD_FOUND, dbQuery, uniqueResult);
+    		System.out.println(message);
+    	}
+    	else
+    	{
+    		String.format(Messages.NO_RECORD_FOUND, dbQuery);
+    	}
+    	
 //        EntityManagerFactory emfactory = Persistence.createEntityManagerFactory( "Eclipselink_JPA" );
 //        EntityManager entitymanager = emfactory.createEntityManager( );
 //        
