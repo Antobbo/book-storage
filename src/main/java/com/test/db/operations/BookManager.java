@@ -33,9 +33,11 @@ public class BookManager {
         // code to close Hibernate Session factory
     }
  
-    public void create() {
+    public void create(String title, String author, String location) {
         // code to save a book
-    	Book book = new Book("Another test", "Jack", Location.DOWNSTAIRS.getValue());
+    	
+    	//TODO: parse location
+    	Book book = new Book(title, author, Integer.parseInt(location));
     	Session session = sessionFactory.openSession();
 	    session.beginTransaction();
 	 
@@ -47,9 +49,7 @@ public class BookManager {
  
     public void read(String dbQuery) {
         // code to get a book
-    	//todo: 
     	Session session = sessionFactory.openSession();
-    	//String searchTerm = "Jack";
     	Criteria criteria = session.createCriteria(Book.class);
     	Book uniqueResult = (Book) criteria.add(Restrictions.eq("author", dbQuery)).uniqueResult();
     	if(uniqueResult != null)
@@ -60,7 +60,7 @@ public class BookManager {
     	}
     	else
     	{
-    		String.format(Messages.NO_RECORD_FOUND, dbQuery);
+    		System.out.println(String.format(Messages.NO_RECORD_FOUND, dbQuery));
     	}
     	
 //        EntityManagerFactory emfactory = Persistence.createEntityManagerFactory( "Eclipselink_JPA" );
@@ -86,13 +86,13 @@ public class BookManager {
     	
     }
  
-    public void delete() {
+    public void delete(String dbQuery) {
         // code to remove a book
     	Session session = sessionFactory.openSession();
-    	String searchTerm = "Jack";
+    	//String searchTerm = "Jack";
     	session.beginTransaction();
     	Criteria criteria = session.createCriteria(Book.class);
-    	Book uniqueResult = (Book) criteria.add(Restrictions.eq("author", searchTerm)).uniqueResult();
+    	Book uniqueResult = (Book) criteria.add(Restrictions.eq("author", dbQuery)).uniqueResult();
     	session.delete(uniqueResult);
     	session.getTransaction().commit();
 	    session.close();
