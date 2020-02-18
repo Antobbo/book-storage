@@ -67,7 +67,8 @@ public class UserInput {
 				break;
 			case 3:
 				System.out.println("You chose UPDATE");
-				//bookManager.update();
+				dbQuery = getUserInputForProcessing(UPDATE);
+				bookManager.update(dbQuery.get(0), dbQuery.get(1), dbQuery.get(2));
 				break;
 			case 4:
 				System.out.println("You chose DELETE");
@@ -94,22 +95,45 @@ public class UserInput {
 		System.out.printf("You chose %s: ", action);
 		String nextLine = "";
 		scanner.nextLine();
+		String searchCriterion = "";
 		
 		if(action.equals(READ) || action.equals(DELETE) )
 		{
 			userInputs.clear();
-			System.out.println("Enter the author");
-			try
+			System.out.println(Messages.RECORD_TO_RETRIEVE);
+//			try
+//			{
+//				nextLine = scanner.nextLine();
+//				userInputs.add(nextLine);
+//				return userInputs;
+//				
+//			}
+//			catch(Exception e)
+//			{
+//				e.printStackTrace();
+//			}
+			
+			
+			nextLine = scanner.nextLine();
+			 switch(nextLine)
 			{
-				nextLine = scanner.nextLine();
-				userInputs.add(nextLine);
-				return userInputs;
-				
+				case "1":
+					System.out.println(Messages.ENTER_AUTHOR);
+					searchCriterion = scanner.nextLine();
+					break;
+				case "2":
+					System.out.println(Messages.ENTER_TITLE);
+					searchCriterion = scanner.nextLine();
+					break;
+				case "3":
+					System.out.println(Messages.ENTER_LOCATION);
+					nextLine = scanner.nextLine();
+					break;					
 			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-			}
+			
+			 userInputs.add(searchCriterion);
+			 userInputs.add(nextLine);
+			  
 		}
 		
 		else if(action.equals(CREATE))
@@ -133,6 +157,45 @@ public class UserInput {
 				
 			}			
 			
+		}
+		
+		else if(action.equals(UPDATE))
+		{
+			userInputs.clear();
+			System.out.println(Messages.FIELD_TO_UPDATE);
+			int userChoice = scanner.nextInt();
+			String fieldToAmend = "";
+			String newValue = "";
+			scanner.nextLine();
+			
+			switch(userChoice)
+			{
+				case 1:
+					System.out.println(Messages.ENTER_AUTHOR);
+					fieldToAmend = scanner.nextLine();
+					System.out.println(Messages.ENTER_MODIFIED_AUTHOR);
+					newValue = scanner.nextLine();
+					break;
+				case 2:
+					System.out.println(Messages.ENTER_TITLE);
+					fieldToAmend = scanner.nextLine();
+					System.out.println(Messages.ENTER_MODIFIED_TITLE);
+					newValue = scanner.nextLine();
+					//todo: you need to enter the new value as well and store it in the array
+					break;
+				case 3:
+					System.out.println(Messages.ENTER_LOCATION);
+					fieldToAmend = scanner.nextLine();
+					System.out.println(Messages.ENTER_MODIFIED_LOCATION);
+					newValue = scanner.nextLine();
+					//todo: you need to enter the new value as well and store it in the array
+					break;					
+			}
+			
+			userInputs.add(fieldToAmend);
+			userInputs.add(String.valueOf(userChoice));
+			userInputs.add(newValue);
+			return userInputs;
 		}
 		return null;
 
