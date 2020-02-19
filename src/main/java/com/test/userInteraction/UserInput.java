@@ -13,8 +13,9 @@ public class UserInput {
 	private static final String CREATE = "CREATE";
 	private static final String UPDATE = "UPDATE";
 	private static final String DELETE = "DELETE";
-	private static final int RETRIEVE_OR_DELETE_QUERY_NUMBER_ARGS = 1;
-	private static final int CREATE_QUERY_NUMBER_ARGS = 3;
+	private static final String AUTHOR = "author";
+	private static final String TITLE = "title";
+	private static final String LOCATION = "location";
 	private static final Scanner scanner = new Scanner(System.in);
 	
 	
@@ -22,7 +23,7 @@ public class UserInput {
 		//Scanner scanner = new Scanner(System.in);
 		int choice = 0;
 		boolean isValidInput = false;
-	    System.out.printf("Welcome. Select action: %d for READ, %d for CREATE, %d for UPDATE, %d for DELETE.", OperationOptions.READ.getValue(), OperationOptions.CREATE.getValue(), OperationOptions.UPDATE.getValue(), OperationOptions.DELETE.getValue());
+	    System.out.printf("Welcome. Select action: %d for READ, %d for CREATE, %d for UPDATE, %d for DELETE, %d for EXIT.", OperationOptions.READ.getValue(), OperationOptions.CREATE.getValue(), OperationOptions.UPDATE.getValue(), OperationOptions.DELETE.getValue(), OperationOptions.EXIT.getValue());
 	    while(!isValidInput)
 		    try {		    	  
 		    	choice = scanner.nextInt();
@@ -46,24 +47,13 @@ public class UserInput {
 				break;
 			case 1:
 				System.out.println("You chose READ");
-				dbQuery = getUserInputForProcessing(READ);
-				if(dbQuery.size() == RETRIEVE_OR_DELETE_QUERY_NUMBER_ARGS)
-				{
-					bookManager.read(dbQuery.get(0));
-				}
+				dbQuery = getUserInputForProcessing(READ);				
+				bookManager.read(dbQuery.get(0), dbQuery.get(1));				
 				break;
 			case 2:
 				System.out.println("You chose CREATE");
-				dbQuery = getUserInputForProcessing(CREATE);
-				if(dbQuery.size() == CREATE_QUERY_NUMBER_ARGS)
-				{
-					bookManager.create(dbQuery.get(0), dbQuery.get(1), dbQuery.get(2));
-				}
-				else
-				{
-					System.out.println(Messages.WRONG_NUMBER_OF_ARGUMENTS);
-				}
-				
+				dbQuery = getUserInputForProcessing(CREATE);				
+				bookManager.create(dbQuery.get(0), dbQuery.get(1), dbQuery.get(2));							
 				break;
 			case 3:
 				System.out.println("You chose UPDATE");
@@ -72,18 +62,9 @@ public class UserInput {
 				break;
 			case 4:
 				System.out.println("You chose DELETE");
-				dbQuery = getUserInputForProcessing(DELETE);
-				if(dbQuery.size() == RETRIEVE_OR_DELETE_QUERY_NUMBER_ARGS)
-				{
-					bookManager.delete(dbQuery.get(0));
-				}
-				else
-				{
-					System.out.println(Messages.WRONG_NUMBER_OF_ARGUMENTS);
-				}
-			//	bookManager.delete();
-				break;
-				
+				dbQuery = getUserInputForProcessing(DELETE);				
+				bookManager.delete(dbQuery.get(0), dbQuery.get(1));				
+				break;				
 		}
 		
 	}
@@ -101,19 +82,7 @@ public class UserInput {
 		{
 			userInputs.clear();
 			System.out.println(Messages.RECORD_TO_RETRIEVE);
-//			try
-//			{
-//				nextLine = scanner.nextLine();
-//				userInputs.add(nextLine);
-//				return userInputs;
-//				
-//			}
-//			catch(Exception e)
-//			{
-//				e.printStackTrace();
-//			}
-			
-			
+
 			nextLine = scanner.nextLine();
 			 switch(nextLine)
 			{
@@ -132,7 +101,8 @@ public class UserInput {
 			}
 			
 			 userInputs.add(searchCriterion);
-			 userInputs.add(nextLine);
+			 userInputs.add(getDbField(nextLine));
+			 return userInputs;
 			  
 		}
 		
@@ -193,12 +163,28 @@ public class UserInput {
 			}
 			
 			userInputs.add(fieldToAmend);
-			userInputs.add(String.valueOf(userChoice));
+			userInputs.add(getDbField(String.valueOf(userChoice)));
 			userInputs.add(newValue);
 			return userInputs;
 		}
 		return null;
 
 		
+	}
+	
+	private String getDbField(String choice)
+	{
+		switch(choice)
+		{
+		case "1":
+			return AUTHOR;
+		
+		case "2":
+			return TITLE;
+		
+		case "3":
+			return LOCATION;
+		}		
+		return null;		
 	}
 }
