@@ -9,6 +9,11 @@ import com.test.db.operations.BookManager;
 import com.test.messages.Messages;
 
 public class UserInput {
+	
+	private List<String> userInputs;
+	private String dbField;
+	private String newFieldValue;
+	
 	private static final String READ = "READ";
 	private static final String CREATE = "CREATE";
 	private static final String UPDATE = "UPDATE";
@@ -38,7 +43,6 @@ public class UserInput {
 	}
 
 	public void processChoice(int userChoice, BookManager bookManager) {
-		List<String> dbQuery = new ArrayList<>();
 		switch(userChoice) {
 			case 0:
 				System.out.println("Goodbye.");
@@ -46,32 +50,32 @@ public class UserInput {
 				break;
 			case 1:
 				System.out.println("You chose READ");
-				dbQuery = getUserInputForProcessing(READ);				
-				bookManager.read(dbQuery.get(0), dbQuery.get(1));				
+				getUserInputForProcessing(READ);				
+				bookManager.read(userInputs.get(0), dbField);				
 				break;
 			case 2:
 				System.out.println("You chose CREATE");
-				dbQuery = getUserInputForProcessing(CREATE);				
-				bookManager.create(dbQuery.get(0), dbQuery.get(1), dbQuery.get(2));							
+				getUserInputForProcessing(CREATE);				
+				bookManager.create(userInputs.get(0), userInputs.get(1), userInputs.get(2));							
 				break;
 			case 3:
 				System.out.println("You chose UPDATE");
-				dbQuery = getUserInputForProcessing(UPDATE);
-				bookManager.update(dbQuery.get(0), dbQuery.get(1), dbQuery.get(2));
+				getUserInputForProcessing(UPDATE);
+				bookManager.update(userInputs.get(0), dbField, newFieldValue);
 				break;
 			case 4:
 				System.out.println("You chose DELETE");
-				dbQuery = getUserInputForProcessing(DELETE);				
-				bookManager.delete(dbQuery.get(0), dbQuery.get(1));				
+				getUserInputForProcessing(DELETE);				
+				bookManager.delete(userInputs.get(0), dbField);				
 				break;				
 		}
 		
 	}
 	
-	public List<String> getUserInputForProcessing(String action)
+	public void getUserInputForProcessing(String action)
 	{
 		
-		List<String> userInputs = new ArrayList<>();
+		userInputs = new ArrayList<>();
 		System.out.printf("You chose %s: ", action);
 		String nextLine = "";
 		scanner.nextLine();
@@ -100,9 +104,7 @@ public class UserInput {
 			}
 			
 			 userInputs.add(searchCriterion);
-			 userInputs.add(getDbField(nextLine));
-			 return userInputs;
-			  
+			 dbField = getDbField(nextLine);			  
 		}
 		
 		else if(action.equals(CREATE))
@@ -116,10 +118,10 @@ public class UserInput {
 				String author = scanner.nextLine();
 				System.out.println(Messages.ENTER_LOCATION);
 				int location = scanner.nextInt();
+				//todo: needs to validate the location
 				userInputs.add(title);
 				userInputs.add(author);
 				userInputs.add(String.valueOf(location));
-				return userInputs;
 			}
 			catch(Exception e)
 			{
@@ -132,43 +134,37 @@ public class UserInput {
 		{
 			userInputs.clear();
 			System.out.println(Messages.FIELD_TO_UPDATE);
-			int userChoice = scanner.nextInt();
+			String userChoice = scanner.nextLine();
 			String fieldToAmend = "";
-			String newValue = "";
-			scanner.nextLine();
 			
 			switch(userChoice)
 			{
-				case 1:
+				case "1":
 					System.out.println(Messages.ENTER_AUTHOR);
 					fieldToAmend = scanner.nextLine();
 					System.out.println(Messages.ENTER_MODIFIED_AUTHOR);
-					newValue = scanner.nextLine();
+					newFieldValue = scanner.nextLine();
 					break;
-				case 2:
+				case "2":
 					System.out.println(Messages.ENTER_TITLE);
 					fieldToAmend = scanner.nextLine();
 					System.out.println(Messages.ENTER_MODIFIED_TITLE);
-					newValue = scanner.nextLine();
+					newFieldValue = scanner.nextLine();
 					//todo: you need to enter the new value as well and store it in the array
 					break;
-				case 3:
+				case "3":
 					System.out.println(Messages.ENTER_LOCATION);
 					fieldToAmend = scanner.nextLine();
 					System.out.println(Messages.ENTER_MODIFIED_LOCATION);
-					newValue = scanner.nextLine();
+					newFieldValue = scanner.nextLine();
 					//todo: you need to enter the new value as well and store it in the array
 					break;					
 			}
 			
 			userInputs.add(fieldToAmend);
-			userInputs.add(getDbField(String.valueOf(userChoice)));
-			userInputs.add(newValue);
-			return userInputs;
-		}
-		return null;
+			dbField = getDbField(userChoice);
 
-		
+		}		
 	}
 	
 	private String getDbField(String choice)
