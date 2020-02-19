@@ -20,7 +20,6 @@ public class UserInput {
 	
 	
 	public int getUserInput() {
-		//Scanner scanner = new Scanner(System.in);
 		int choice = 0;
 		boolean isValidInput = false;
 	    System.out.printf("Welcome. Select action: %d for READ, %d for CREATE, %d for UPDATE, %d for DELETE, %d for EXIT.", OperationOptions.READ.getValue(), OperationOptions.CREATE.getValue(), OperationOptions.UPDATE.getValue(), OperationOptions.DELETE.getValue(), OperationOptions.EXIT.getValue());
