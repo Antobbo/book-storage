@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Criteria;
@@ -104,32 +105,42 @@ public class BookManager {
         // code to modify a book
     	Session session = sessionFactory.openSession();
     	session.beginTransaction();
-    	Criteria criteria = session.createCriteria(Book.class);
-    	Book uniqueResult = (Book) criteria.add(Restrictions.eq(field, dbQuery)).uniqueResult();
-    	if(uniqueResult == null)
-		{
-			System.out.println(String.format(Messages.NO_RECORD_FOUND, dbQuery));
-		}
-    	else
-    	{    	
-	    	switch(field)
-	    	{
-	    		case "author":    			
-	    			uniqueResult.setAuthor(modifiedField);
-	    			break;
-	    		case "title":    			
-	    			uniqueResult.setTitle(modifiedField);
-	    			break;
-	    		case "location":    			
-	    			uniqueResult.setLocation(Integer.parseInt(modifiedField));
-	    			break;    			
-	    	}
-	    	
-	    	session.update(uniqueResult);
-	    	session.getTransaction().commit();
-		    session.close();
-		    System.out.println(uniqueResult);
-    	}
+    	CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();    	
+    	CriteriaUpdate<Book> update = criteriaBuilder.createCriteriaUpdate(Book.class);
+    	Root<Book> bookRoot = update.from(Book.class);
+    	update.set(field, modifiedField);
+    	update.where(criteriaBuilder.greaterThanOrEqualTo(bookRoot.get(field), dbQuery));
+    	session.createQuery(update).executeUpdate();
+    	session.getTransaction().commit();
+	    session.close();
+    	
+    	
+//    	Criteria criteria = session.createCriteria(Book.class);
+//    	Book uniqueResult = (Book) criteria.add(Restrictions.eq(field, dbQuery)).uniqueResult();
+//    	if(uniqueResult == null)
+//		{
+//			System.out.println(String.format(Messages.NO_RECORD_FOUND, dbQuery));
+//		}
+//    	else
+//    	{    	
+//	    	switch(field)
+//	    	{
+//	    		case "author":    			
+//	    			uniqueResult.setAuthor(modifiedField);
+//	    			break;
+//	    		case "title":    			
+//	    			uniqueResult.setTitle(modifiedField);
+//	    			break;
+//	    		case "location":    			
+//	    			uniqueResult.setLocation(Integer.parseInt(modifiedField));
+//	    			break;    			
+//	    	}
+//	    	
+//	    	session.update(uniqueResult);
+//	    	session.getTransaction().commit();
+//		    session.close();
+//		    System.out.println(uniqueResult);
+//    	}
     }
  
     public void delete(String dbQuery, String field) {
