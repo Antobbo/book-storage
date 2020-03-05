@@ -31,11 +31,20 @@ public class UserInput {
 	    while(!isValidInput)
 		    try {		    	  
 		    	choice = scanner.nextInt();
-		    	isValidInput = true;
+		    	if(choice == OperationOptions.READ.getValue() || choice == OperationOptions.CREATE.getValue() || choice == OperationOptions.UPDATE.getValue() || choice == OperationOptions.DELETE.getValue())
+		    	{
+		    		isValidInput = true;
+		    	}
+		    	else
+		    	{
+		    		isValidInput = false;
+		    		System.out.println(String.format(Messages.NOT_ALLOWED_VALUES, OperationOptions.READ.getValue(), OperationOptions.CREATE.getValue(), OperationOptions.UPDATE.getValue(), OperationOptions.DELETE.getValue(), OperationOptions.EXIT.getValue()));
+		    	}
+		    	
 		    	scanner.hasNextLine();
 		    }
 		    catch(InputMismatchException e) {
-		    	 System.out.println("value must contain only number");
+		    	 System.out.println(Messages.NOT_NUMERICAL_ERROR);
 		    	 isValidInput = false;
 		    	 scanner.nextLine();		    	 
 		    }
@@ -43,31 +52,48 @@ public class UserInput {
 	}
 
 	public void processChoice(int userChoice, BookManager bookManager) {
-		switch(userChoice) {
+		
+		switch(userChoice)
+		{
 			case 0:
 				System.out.println("Goodbye.");
 				System.exit(0);
 				break;
 			case 1:
 				System.out.println("You chose READ");
-				getUserInputForProcessing(READ);				
-				bookManager.read(userInputs.get(0), dbField);				
+				getUserInputForProcessing(READ);
+				if(!userInputs.isEmpty())
+				{
+					bookManager.read(userInputs.get(0), dbField);
+				}
 				break;
 			case 2:
 				System.out.println("You chose CREATE");
-				getUserInputForProcessing(CREATE);				
-				bookManager.create(userInputs.get(0), userInputs.get(1), userInputs.get(2));							
+				getUserInputForProcessing(CREATE);	
+				if(!userInputs.isEmpty())
+				{
+					bookManager.create(userInputs.get(0), userInputs.get(1), userInputs.get(2));	
+				}
 				break;
 			case 3:
 				System.out.println("You chose UPDATE");
 				getUserInputForProcessing(UPDATE);
-				bookManager.update(userInputs.get(0), dbField, newFieldValue);
+				if(!userInputs.isEmpty())
+				{
+					bookManager.update(userInputs.get(0), dbField, newFieldValue);
+				}
 				break;
 			case 4:
 				System.out.println("You chose DELETE");
-				getUserInputForProcessing(DELETE);				
-				bookManager.delete(userInputs.get(0), dbField);				
-				break;				
+				getUserInputForProcessing(DELETE);	
+				if(!userInputs.isEmpty())
+				{
+					bookManager.delete(userInputs.get(0), dbField);	
+				}
+				break;	
+			default:
+				System.out.println(Messages.WRONG_ACTION);
+				
 		}
 		
 	}
@@ -77,34 +103,48 @@ public class UserInput {
 		
 		userInputs = new ArrayList<>();
 		System.out.printf("You chose %s: ", action);
-		String nextLine = "";
+		String userInput = "";
 		scanner.nextLine();
 		String searchCriterion = "";
 		
+		
 		if(action.equals(READ) || action.equals(DELETE) )
 		{
+			boolean isValid = false;
 			userInputs.clear();
 			System.out.println(Messages.RECORD_TO_RETRIEVE);
 
-			nextLine = scanner.nextLine();
-			 switch(nextLine)
-			{
-				case "1":
-					System.out.println(Messages.ENTER_AUTHOR);
-					searchCriterion = scanner.nextLine();
-					break;
-				case "2":
-					System.out.println(Messages.ENTER_TITLE);
-					searchCriterion = scanner.nextLine();
-					break;
-				case "3":
-					System.out.println(Messages.ENTER_LOCATION);
-					nextLine = scanner.nextLine();
-					break;					
+			userInput = scanner.nextLine();
+			//while(getDbField(userInput) != null )//need to have a false or thrue var in here as 
+			//if(getDbField(userInput) != null || !getDbField(userInput).equals(AUTHOR) || !getDbField(userInput).equals(TITLE) || !getDbField(userInput).equals(LOCATION))
+			while(!isValid)
+			{				
+				switch(userInput)
+				{
+					case "1":
+						System.out.println(Messages.ENTER_AUTHOR);
+						searchCriterion = scanner.nextLine();
+						isValid = true;
+						break;
+					case "2":
+						System.out.println(Messages.ENTER_TITLE);
+						searchCriterion = scanner.nextLine();
+						isValid = true;
+						break;
+					case "3":
+						System.out.println(Messages.ENTER_LOCATION);
+						searchCriterion = scanner.nextLine();
+						isValid = true;
+						break;	
+					default:
+						System.out.println("Wrong option, try again.");
+						userInput = scanner.nextLine();
+						break;
+				}				
+					
 			}
-			
 			 userInputs.add(searchCriterion);
-			 dbField = getDbField(nextLine);			  
+			 dbField = getDbField(userInput);
 		}
 		
 		else if(action.equals(CREATE))
@@ -136,7 +176,7 @@ public class UserInput {
 			System.out.println(Messages.FIELD_TO_UPDATE);
 			String userChoice = scanner.nextLine();
 			String fieldToAmend = "";
-			
+			//while(searchCriterion() != null)
 			switch(userChoice)
 			{
 				case "1":
@@ -179,7 +219,9 @@ public class UserInput {
 		
 		case "3":
 			return LOCATION;
+			
+		default:
+			return null;
 		}		
-		return null;		
 	}
 }
