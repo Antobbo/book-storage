@@ -31,7 +31,7 @@ public class UserInput {
 	    while(!isValidInput)
 		    try {		    	  
 		    	choice = scanner.nextInt();
-		    	if(choice == OperationOptions.READ.getValue() || choice == OperationOptions.CREATE.getValue() || choice == OperationOptions.UPDATE.getValue() || choice == OperationOptions.DELETE.getValue())
+		    	if(choice == OperationOptions.READ.getValue() || choice == OperationOptions.CREATE.getValue() || choice == OperationOptions.UPDATE.getValue() || choice == OperationOptions.DELETE.getValue() || choice == OperationOptions.EXIT.getValue())
 		    	{
 		    		isValidInput = true;
 		    	}
@@ -92,7 +92,7 @@ public class UserInput {
 				}
 				break;	
 			default:
-				System.out.println(Messages.WRONG_ACTION);
+				System.out.println(Messages.WRONG_ACTION_PROGRAM_TERMINATED);
 				
 		}
 		
@@ -115,10 +115,8 @@ public class UserInput {
 			System.out.println(Messages.RECORD_TO_RETRIEVE);
 
 			userInput = scanner.nextLine();
-			//while(getDbField(userInput) != null )//need to have a false or thrue var in here as 
-			//if(getDbField(userInput) != null || !getDbField(userInput).equals(AUTHOR) || !getDbField(userInput).equals(TITLE) || !getDbField(userInput).equals(LOCATION))
 			while(!isValid)
-			{				
+			{			
 				switch(userInput)
 				{
 					case "1":
@@ -137,7 +135,8 @@ public class UserInput {
 						isValid = true;
 						break;	
 					default:
-						System.out.println("Wrong option, try again.");
+						System.out.println(Messages.WRONG_ACTION_TRY_AGAIN);
+						System.out.println(Messages.RECORD_TO_RETRIEVE);
 						userInput = scanner.nextLine();
 						break;
 				}				
@@ -172,35 +171,45 @@ public class UserInput {
 		
 		else if(action.equals(UPDATE))
 		{
+			boolean isValid = false;
 			userInputs.clear();
 			System.out.println(Messages.FIELD_TO_UPDATE);
 			String userChoice = scanner.nextLine();
 			String fieldToAmend = "";
 			//while(searchCriterion() != null)
-			switch(userChoice)
-			{
-				case "1":
-					System.out.println(Messages.ENTER_AUTHOR);
-					fieldToAmend = scanner.nextLine();
-					System.out.println(Messages.ENTER_MODIFIED_AUTHOR);
-					newFieldValue = scanner.nextLine();
-					break;
-				case "2":
-					System.out.println(Messages.ENTER_TITLE);
-					fieldToAmend = scanner.nextLine();
-					System.out.println(Messages.ENTER_MODIFIED_TITLE);
-					newFieldValue = scanner.nextLine();
-					//todo: you need to enter the new value as well and store it in the array
-					break;
-				case "3":
-					System.out.println(Messages.ENTER_LOCATION);
-					fieldToAmend = scanner.nextLine();
-					System.out.println(Messages.ENTER_MODIFIED_LOCATION);
-					newFieldValue = scanner.nextLine();
-					//todo: you need to enter the new value as well and store it in the array
-					break;					
+			while(!isValid) {
+				switch(userChoice)
+				{
+					case "1":
+						System.out.println(Messages.ENTER_AUTHOR);
+						fieldToAmend = scanner.nextLine();
+						System.out.println(Messages.ENTER_MODIFIED_AUTHOR);
+						newFieldValue = scanner.nextLine();
+						isValid = true;
+						break;
+					case "2":
+						System.out.println(Messages.ENTER_TITLE);
+						fieldToAmend = scanner.nextLine();
+						System.out.println(Messages.ENTER_MODIFIED_TITLE);
+						newFieldValue = scanner.nextLine();
+						isValid = true;
+						//todo: you need to enter the new value as well and store it in the array
+						break;
+					case "3":
+						System.out.println(Messages.ENTER_LOCATION);
+						fieldToAmend = scanner.nextLine();
+						System.out.println(Messages.ENTER_MODIFIED_LOCATION);
+						newFieldValue = scanner.nextLine();
+						isValid = true;
+						//todo: you need to enter the new value as well and store it in the array
+						break;
+					default:
+						System.out.println(Messages.WRONG_ACTION_TRY_AGAIN);
+						System.out.println(Messages.RECORD_TO_RETRIEVE);
+						userChoice = scanner.nextLine();
+						break;
+				}
 			}
-			
 			userInputs.add(fieldToAmend);
 			dbField = getDbField(userChoice);
 
