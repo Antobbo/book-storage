@@ -20,5 +20,6 @@ public class Messages
 	public static final String WRONG_ACTION_TRY_AGAIN = "Wrong action. Try again.";
 	public static final String NOT_ALLOWED_VALUES = "Value not allowed. Allowed values are: %d, %d, %d, %d, %d. Try again";
 	public static final String NOT_NUMERICAL_ERROR = "Value must be a number. Try again.";
+	public static final String INVALID_LOCATION = "The location isn't valid. Allowed values are from %d to %d";
 	
 }

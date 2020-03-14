@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import com.test.db.operations.BookManager;
 import com.test.messages.Messages;
+import com.test.model.Location;
 
 public class UserInput {
 	
@@ -132,7 +133,12 @@ public class UserInput {
 					case "3":
 						System.out.println(Messages.ENTER_LOCATION);
 						searchCriterion = scanner.nextLine();
-						isValid = true;
+						isValid = isInputValid(searchCriterion);
+						if(!isValid)
+						{
+							Location[] values = Location.values();
+							System.out.println(String.format(Messages.INVALID_LOCATION, values[0].getValue(), Location.values().length));
+						}
 						break;	
 					default:
 						System.out.println(Messages.WRONG_ACTION_TRY_AGAIN);
@@ -142,6 +148,7 @@ public class UserInput {
 				}				
 					
 			}
+			
 			 userInputs.add(searchCriterion);
 			 dbField = getDbField(userInput);
 		}
@@ -157,7 +164,6 @@ public class UserInput {
 				String author = scanner.nextLine();
 				System.out.println(Messages.ENTER_LOCATION);
 				int location = scanner.nextInt();
-				//todo: needs to validate the location
 				userInputs.add(title);
 				userInputs.add(author);
 				userInputs.add(String.valueOf(location));
@@ -176,7 +182,6 @@ public class UserInput {
 			System.out.println(Messages.FIELD_TO_UPDATE);
 			String userChoice = scanner.nextLine();
 			String fieldToAmend = "";
-			//while(searchCriterion() != null)
 			while(!isValid) {
 				switch(userChoice)
 				{
@@ -216,6 +221,15 @@ public class UserInput {
 		}		
 	}
 	
+	private boolean isInputValid(String searchCriterion) {
+		return searchCriterion.equals(String.valueOf(Location.DOWNSTAIRS.getValue())) || 
+				searchCriterion.equals(String.valueOf(Location.UPSTAIRS_FIRST_BEDROOM.getValue())) || 
+				searchCriterion.equals(String.valueOf(Location.UPSTAIRS_SECOND_BEDROOM.getValue())) || 
+				searchCriterion.equals(String.valueOf(Location.UPSTAIRS_SPARE_ROOM.getValue())) || 
+				searchCriterion.equals(String.valueOf(Location.ON_LOAN.getValue()));
+		
+	}
+
 	private String getDbField(String choice)
 	{
 		switch(choice)
