@@ -80,7 +80,7 @@ public class BookManager {
     	CriteriaUpdate<Book> update = criteriaBuilder.createCriteriaUpdate(Book.class);
     	Root<Book> bookRoot = update.from(Book.class);
     	update.set(field, modifiedField);
-    	update.where(criteriaBuilder.greaterThanOrEqualTo(bookRoot.get(field), dbQuery));
+    	update.where(criteriaBuilder.equal(bookRoot.get(field), dbQuery));
     	session.createQuery(update).executeUpdate();
     	session.getTransaction().commit();
 	    session.close();
