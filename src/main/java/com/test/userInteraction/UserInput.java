@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import com.test.db.operations.BookManager;
 import com.test.messages.Messages;
+import com.test.model.Location;
 
 public class UserInput {
 	
@@ -31,11 +32,20 @@ public class UserInput {
 	    while(!isValidInput)
 		    try {		    	  
 		    	choice = scanner.nextInt();
-		    	isValidInput = true;
+		    	if(choice == OperationOptions.READ.getValue() || choice == OperationOptions.CREATE.getValue() || choice == OperationOptions.UPDATE.getValue() || choice == OperationOptions.DELETE.getValue() || choice == OperationOptions.EXIT.getValue())
+		    	{
+		    		isValidInput = true;
+		    	}
+		    	else
+		    	{
+		    		isValidInput = false;
+		    		System.out.println(String.format(Messages.NOT_ALLOWED_VALUES, OperationOptions.READ.getValue(), OperationOptions.CREATE.getValue(), OperationOptions.UPDATE.getValue(), OperationOptions.DELETE.getValue(), OperationOptions.EXIT.getValue()));
+		    	}
+		    	
 		    	scanner.hasNextLine();
 		    }
 		    catch(InputMismatchException e) {
-		    	 System.out.println("value must contain only number");
+		    	 System.out.println(Messages.NOT_NUMERICAL_ERROR);
 		    	 isValidInput = false;
 		    	 scanner.nextLine();		    	 
 		    }
@@ -43,31 +53,48 @@ public class UserInput {
 	}
 
 	public void processChoice(int userChoice, BookManager bookManager) {
-		switch(userChoice) {
+		
+		switch(userChoice)
+		{
 			case 0:
 				System.out.println("Goodbye.");
 				System.exit(0);
 				break;
 			case 1:
 				System.out.println("You chose READ");
-				getUserInputForProcessing(READ);				
-				bookManager.read(userInputs.get(0), dbField);				
+				getUserInputForProcessing(READ);
+				if(!userInputs.isEmpty())
+				{
+					bookManager.read(userInputs.get(0), dbField);
+				}
 				break;
 			case 2:
 				System.out.println("You chose CREATE");
-				getUserInputForProcessing(CREATE);				
-				bookManager.create(userInputs.get(0), userInputs.get(1), userInputs.get(2));							
+				getUserInputForProcessing(CREATE);	
+				if(!userInputs.isEmpty())
+				{
+					bookManager.create(userInputs.get(0), userInputs.get(1), userInputs.get(2));	
+				}
 				break;
 			case 3:
 				System.out.println("You chose UPDATE");
 				getUserInputForProcessing(UPDATE);
-				bookManager.update(userInputs.get(0), dbField, newFieldValue);
+				if(!userInputs.isEmpty())
+				{
+					bookManager.update(userInputs.get(0), dbField, newFieldValue);
+				}
 				break;
 			case 4:
 				System.out.println("You chose DELETE");
-				getUserInputForProcessing(DELETE);				
-				bookManager.delete(userInputs.get(0), dbField);				
-				break;				
+				getUserInputForProcessing(DELETE);	
+				if(!userInputs.isEmpty())
+				{
+					bookManager.delete(userInputs.get(0), dbField);	
+				}
+				break;	
+			default:
+				System.out.println(Messages.WRONG_ACTION_PROGRAM_TERMINATED);
+				
 		}
 		
 	}
@@ -77,34 +104,53 @@ public class UserInput {
 		
 		userInputs = new ArrayList<>();
 		System.out.printf("You chose %s: ", action);
-		String nextLine = "";
+		String userInput = "";
 		scanner.nextLine();
 		String searchCriterion = "";
 		
+		
 		if(action.equals(READ) || action.equals(DELETE) )
 		{
+			boolean isValid = false;
 			userInputs.clear();
 			System.out.println(Messages.RECORD_TO_RETRIEVE);
 
-			nextLine = scanner.nextLine();
-			 switch(nextLine)
-			{
-				case "1":
-					System.out.println(Messages.ENTER_AUTHOR);
-					searchCriterion = scanner.nextLine();
-					break;
-				case "2":
-					System.out.println(Messages.ENTER_TITLE);
-					searchCriterion = scanner.nextLine();
-					break;
-				case "3":
-					System.out.println(Messages.ENTER_LOCATION);
-					nextLine = scanner.nextLine();
-					break;					
+			userInput = scanner.nextLine();
+			while(!isValid)
+			{			
+				switch(userInput)
+				{
+					case "1":
+						System.out.println(Messages.ENTER_AUTHOR);
+						searchCriterion = scanner.nextLine();
+						isValid = true;
+						break;
+					case "2":
+						System.out.println(Messages.ENTER_TITLE);
+						searchCriterion = scanner.nextLine();
+						isValid = true;
+						break;
+					case "3":
+						System.out.println(Messages.ENTER_LOCATION);
+						searchCriterion = scanner.nextLine();
+						isValid = isInputValid(searchCriterion);
+						if(!isValid)
+						{
+							Location[] values = Location.values();
+							System.out.println(String.format(Messages.INVALID_LOCATION, values[0].getValue(), Location.values().length));
+						}
+						break;	
+					default:
+						System.out.println(Messages.WRONG_ACTION_TRY_AGAIN);
+						System.out.println(Messages.RECORD_TO_RETRIEVE);
+						userInput = scanner.nextLine();
+						break;
+				}				
+					
 			}
 			
 			 userInputs.add(searchCriterion);
-			 dbField = getDbField(nextLine);			  
+			 dbField = getDbField(userInput);
 		}
 		
 		else if(action.equals(CREATE))
@@ -118,7 +164,6 @@ public class UserInput {
 				String author = scanner.nextLine();
 				System.out.println(Messages.ENTER_LOCATION);
 				int location = scanner.nextInt();
-				//todo: needs to validate the location
 				userInputs.add(title);
 				userInputs.add(author);
 				userInputs.add(String.valueOf(location));
@@ -132,41 +177,59 @@ public class UserInput {
 		
 		else if(action.equals(UPDATE))
 		{
+			boolean isValid = false;
 			userInputs.clear();
 			System.out.println(Messages.FIELD_TO_UPDATE);
 			String userChoice = scanner.nextLine();
 			String fieldToAmend = "";
-			
-			switch(userChoice)
-			{
-				case "1":
-					System.out.println(Messages.ENTER_AUTHOR);
-					fieldToAmend = scanner.nextLine();
-					System.out.println(Messages.ENTER_MODIFIED_AUTHOR);
-					newFieldValue = scanner.nextLine();
-					break;
-				case "2":
-					System.out.println(Messages.ENTER_TITLE);
-					fieldToAmend = scanner.nextLine();
-					System.out.println(Messages.ENTER_MODIFIED_TITLE);
-					newFieldValue = scanner.nextLine();
-					//todo: you need to enter the new value as well and store it in the array
-					break;
-				case "3":
-					System.out.println(Messages.ENTER_LOCATION);
-					fieldToAmend = scanner.nextLine();
-					System.out.println(Messages.ENTER_MODIFIED_LOCATION);
-					newFieldValue = scanner.nextLine();
-					//todo: you need to enter the new value as well and store it in the array
-					break;					
+			while(!isValid) {
+				switch(userChoice)
+				{
+					case "1":
+						System.out.println(Messages.ENTER_AUTHOR);
+						fieldToAmend = scanner.nextLine();
+						System.out.println(Messages.ENTER_MODIFIED_AUTHOR);
+						newFieldValue = scanner.nextLine();
+						isValid = true;
+						break;
+					case "2":
+						System.out.println(Messages.ENTER_TITLE);
+						fieldToAmend = scanner.nextLine();
+						System.out.println(Messages.ENTER_MODIFIED_TITLE);
+						newFieldValue = scanner.nextLine();
+						isValid = true;
+						//todo: you need to enter the new value as well and store it in the array
+						break;
+					case "3":
+						System.out.println(Messages.ENTER_LOCATION);
+						fieldToAmend = scanner.nextLine();
+						System.out.println(Messages.ENTER_MODIFIED_LOCATION);
+						newFieldValue = scanner.nextLine();
+						isValid = true;
+						//todo: you need to enter the new value as well and store it in the array
+						break;
+					default:
+						System.out.println(Messages.WRONG_ACTION_TRY_AGAIN);
+						System.out.println(Messages.RECORD_TO_RETRIEVE);
+						userChoice = scanner.nextLine();
+						break;
+				}
 			}
-			
 			userInputs.add(fieldToAmend);
 			dbField = getDbField(userChoice);
 
 		}		
 	}
 	
+	private boolean isInputValid(String searchCriterion) {
+		return searchCriterion.equals(String.valueOf(Location.DOWNSTAIRS.getValue())) || 
+				searchCriterion.equals(String.valueOf(Location.UPSTAIRS_FIRST_BEDROOM.getValue())) || 
+				searchCriterion.equals(String.valueOf(Location.UPSTAIRS_SECOND_BEDROOM.getValue())) || 
+				searchCriterion.equals(String.valueOf(Location.UPSTAIRS_SPARE_ROOM.getValue())) || 
+				searchCriterion.equals(String.valueOf(Location.ON_LOAN.getValue()));
+		
+	}
+
 	private String getDbField(String choice)
 	{
 		switch(choice)
@@ -179,7 +242,9 @@ public class UserInput {
 		
 		case "3":
 			return LOCATION;
+			
+		default:
+			return null;
 		}		
-		return null;		
 	}
 }
